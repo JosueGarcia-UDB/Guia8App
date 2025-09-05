@@ -11,10 +11,67 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.database.*
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), AdaptadorPersona.OnPersonaAction {
+
+    private lateinit var dbRef: DatabaseReference
+    private lateinit var adapter: AdaptadorPersona
+    private lateinit var tvVacio: TextView
+    private lateinit var rvPersonas: RecyclerView
+    private lateinit var fabAgregar: FloatingActionButton
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        dbRef= FirebaseDatabase.getInstance().reference.child("personas")
+
+        tvVacio=findViewById(R.id.tvVacio)
+        rvPersonas=findViewById(R.id.rvPersonas)
+        fabAgregar=findViewById(R.id.fabAgregar)
+        adapter = AdaptadorPersona(mutableListOf(), this)
+
+        fabAgregar.setOnClickListener {
+            val intent = Intent(this, AddPersonaActivity::class.java)
+            startActivity(intent)
+        }
+
+        escucharCambios()
+    }
+
+    private fun escucharCambios () {
+        dbRef.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val lista = mutableListOf<Persona>()
+                for (hijo in snapshot.children) {
+                    val persona = hijo.getValue(Persona::class.java)
+                    if (persona != null) lista.add(hijo)
+                }
+                adapter.setData(lista)
+                tvVacio.visibility = if (lista.isEmpty()) TextView.VISIBLE else TextView.GONE
+            }
+            override fun onCancelled(error: DatabaseError) {
+                Toast.makeText(this@MainActivity, "Error: ${error.message}",
+                    Toast.LENGTH_SHORT).show()
+            }
+        })
+    }
+
+    override fun onEditar(persona: Persona) {
+        val intent = Intent(this, AddPersonaActivity::class.java)
+        intent.putExtra(AddPersonaActivity.EXTRA_ID, persona.id)
+        intent.putExtra(AddPersonaActivity.EXTRA_NOMBRE, persona.nombre)
+        intent.putExtra(AddPersonaActivity.EXTRA_DUI, persona.dui)
+        startActivity(intent)
+    }
+
+    override fun onEliminar(persona: Persona) {
+        AlertDialog.Builder(this)
+            .setTitle(R.string.eliminar)
+            .setMessage("¿Estás seguro de que deseas eliminar a ${persona.nombre}?")
+            .setPositiveButton("Sí") { _, _ ->
+                dbRef.child(persona.id).removeValue()
+            }
+            .setNegativeButton(android.R.string.cancel, null)
+            .show()
     }
 }
