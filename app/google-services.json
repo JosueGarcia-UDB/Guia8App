@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "117860556523",
+    "firebase_url": "https://fir-dbrealtime-dfc4c-default-rtdb.firebaseio.com",
+    "project_id": "fir-dbrealtime-dfc4c",
+    "storage_bucket": "fir-dbrealtime-dfc4c.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:117860556523:android:4759a105d6b71c19ffa8ae",
+        "android_client_info": {
+          "package_name": "sv.edu.udb.guia8app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB6FSUDbb1ikQuL1ZhErUK871J0wA1oSps"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
