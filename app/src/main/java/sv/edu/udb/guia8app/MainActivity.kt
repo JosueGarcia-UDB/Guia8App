@@ -28,7 +28,10 @@ class MainActivity : AppCompatActivity(), AdaptadorPersona.OnPersonaAction {
         tvVacio=findViewById(R.id.tvVacio)
         rvPersonas=findViewById(R.id.rvPersonas)
         fabAgregar=findViewById(R.id.fabAgregar)
+
         adapter = AdaptadorPersona(mutableListOf(), this)
+        rvPersonas.layoutManager = LinearLayoutManager(this)
+        rvPersonas.adapter = adapter
 
         fabAgregar.setOnClickListener {
             val intent = Intent(this, AddPersonaActivity::class.java)
@@ -44,7 +47,7 @@ class MainActivity : AppCompatActivity(), AdaptadorPersona.OnPersonaAction {
                 val lista = mutableListOf<Persona>()
                 for (hijo in snapshot.children) {
                     val persona = hijo.getValue(Persona::class.java)
-                    if (persona != null) lista.add(hijo)
+                    if (persona != null) lista.add(persona)
                 }
                 adapter.setData(lista)
                 tvVacio.visibility = if (lista.isEmpty()) TextView.VISIBLE else TextView.GONE
@@ -68,8 +71,8 @@ class MainActivity : AppCompatActivity(), AdaptadorPersona.OnPersonaAction {
         AlertDialog.Builder(this)
             .setTitle(R.string.eliminar)
             .setMessage("¿Estás seguro de que deseas eliminar a ${persona.nombre}?")
-            .setPositiveButton("Sí") { _, _ ->
-                dbRef.child(persona.id).removeValue()
+            .setPositiveButton(android.R.string.ok) { _, _ ->
+                persona.id?.let { dbRef.child(it).removeValue() }
             }
             .setNegativeButton(android.R.string.cancel, null)
             .show()

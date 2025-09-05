@@ -53,18 +53,18 @@ class AddPersonaActivity : AppCompatActivity() {
 
         if(editId == null) {
             val id = dbRef.push().key ?: return
-            val persona = Persona(id, nombre, dui)
+            val persona = Persona(id, dui, nombre)
             dbRef.child(id).setValue(persona)
                 .addOnSuccessListener { finish() }
                 .addOnFailureListener { e ->
                     Toast.makeText(this, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
                 }
         } else {
-            val persona = Persona(editId, nombre, dui)
+            val persona = Persona(editId, dui, nombre)
             dbRef.child(editId!!).setValue(persona)
                 .addOnSuccessListener { finish() }
                 .addOnFailureListener {
-                    Toast.makeText(this, "Error: ${it.message}", Toast.LENGTH_SHORT).show())
+                    Toast.makeText(this, "Error: ${it.message}", Toast.LENGTH_SHORT).show()
             }
         }
     }

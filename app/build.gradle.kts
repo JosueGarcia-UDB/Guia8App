@@ -6,7 +6,7 @@ plugins {
 
 android {
     namespace = "sv.edu.udb.guia8app"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "sv.edu.udb.guia8app"
